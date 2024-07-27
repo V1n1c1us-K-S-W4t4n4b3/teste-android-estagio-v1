@@ -1,13 +1,16 @@
 package com.kzdev.sptransaiko
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.kzdev.sptransaiko.databinding.ActivityMainBinding
 
@@ -17,7 +20,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
-    val location = LatLng(-23.5505, -46.6333)
+    private val location = LatLng(-23.5505, -46.6333)
 
     private var locationArrayList: ArrayList<LatLng>? = null
 
@@ -34,15 +37,27 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-    override fun onMapReady(googlemap: GoogleMap) {
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
 
-        mMap = googlemap
+        val spBounds = LatLngBounds(
+            LatLng(-23.8136, -46.7553),
+            LatLng(-23.4377, -46.2920)
+        )
 
-        for (i in locationArrayList!!.indices){
-            mMap.addMarker(MarkerOptions().position(locationArrayList!![i]). title("Marker"))
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(10.0f))
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(locationArrayList!!.get(i)))
+        val originalBitmap = BitmapFactory.decodeResource(resources, R.drawable.icon_stop_buss)
+        val scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, 100, 100, false)
+        val customIcon = BitmapDescriptorFactory.fromBitmap(scaledBitmap)
+
+        for (i in locationArrayList!!.indices) {
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(locationArrayList!![i])
+                    .title("Marker")
+                    .icon(customIcon)
+            )
         }
 
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(spBounds, 0))
     }
 }
