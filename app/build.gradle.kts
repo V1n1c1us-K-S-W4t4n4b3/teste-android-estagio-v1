@@ -41,6 +41,16 @@ android {
 
 dependencies {
 
+    // ViewModels
+    implementation(libs.androidx.fragment.ktx)
+
+    // retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+    implementation(libs.okhttp)
+
+    // Standard
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
