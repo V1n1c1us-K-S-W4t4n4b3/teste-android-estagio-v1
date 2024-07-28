@@ -1,0 +1,74 @@
+package com.kzdev.sptransaiko.domain.stopbussdeatils.ui
+
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.kzdev.sptransaiko.databinding.ActivityStopBussDetailsBinding
+import com.kzdev.sptransaiko.domain.monitoringlines.MonitoringLinesActivity
+import com.kzdev.sptransaiko.domain.stopbussdeatils.adapter.ExpectedStopBussLinesAdapter
+import com.kzdev.sptransaiko.domain.stopbussdeatils.model.DataExpectedTimeStopBussResponse
+import com.kzdev.sptransaiko.domain.stopbussdeatils.viewmodel.ExpectedStopBussLinesViewModel
+
+class StopBussDetailsActivity : AppCompatActivity() {
+
+    private val binding by lazy { ActivityStopBussDetailsBinding.inflate(layoutInflater) }
+
+    private val viewModelExpectedStopBussLines: ExpectedStopBussLinesViewModel by viewModels { ExpectedStopBussLinesViewModel.Factory }
+
+    private var name = ""
+
+    private var token = ""
+
+    private var cp = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+
+        receiveData()
+
+        binding.tvName.text = name
+
+        binding.toolbar.setNavigationOnClickListener { finish() }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        viewModelExpectedStopBussLines.getExpectedStopBussLines(token, cp)
+
+        observerViews()
+    }
+
+    private fun observerViews() {
+        viewModelExpectedStopBussLines.list.observe(this) {
+            setupRecyclerView(it)
+        }
+    }
+
+    private fun setupRecyclerView(data: DataExpectedTimeStopBussResponse) {
+        binding.rv.layoutManager = LinearLayoutManager(this)
+        binding.rv.adapter = ExpectedStopBussLinesAdapter(data) {
+            open(it)
+        }
+    }
+
+    private fun open(cl: Int) {
+        val intent = Intent(this, MonitoringLinesActivity::class.java)
+        intent.putExtra("cl", cl)
+        startActivity(intent)
+    }
+
+
+    private fun receiveData() {
+
+        name = intent.getStringExtra("name") ?: ""
+
+        token = intent.getStringExtra("name") ?: ""
+
+        cp = intent.getIntExtra("cp", 0)
+
+    }
+}

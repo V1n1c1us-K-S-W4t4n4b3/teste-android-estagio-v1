@@ -16,17 +16,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SPTransAIKO"
         tools:targetApi="31">
+        <activity
+            android:name=".domain.monitoringlines.MonitoringLinesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".domain.stopbussdeatils.ui.StopBussDetailsActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCTsXqyUo8sunkE_akR11j2t3TBW4v_Sck" />
 
         <activity
-            android:name=".domain.ui.MapsActivity"
+            android:name=".domain.stopbuss.ui.MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name=".domain.ui.MainActivity"
+            android:name=".domain.stopbuss.ui.StopBussMapActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

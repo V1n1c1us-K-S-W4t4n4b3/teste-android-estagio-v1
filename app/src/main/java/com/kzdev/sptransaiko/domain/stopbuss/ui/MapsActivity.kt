@@ -1,4 +1,4 @@
-package com.kzdev.sptransaiko.domain.ui
+package com.kzdev.sptransaiko.domain.stopbuss.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

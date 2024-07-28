@@ -1,5 +1,6 @@
-package com.kzdev.sptransaiko.domain.ui
+package com.kzdev.sptransaiko.domain.stopbuss.ui
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -18,9 +19,11 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.kzdev.sptransaiko.R
 import com.kzdev.sptransaiko.databinding.ActivityMainBinding
 import com.kzdev.sptransaiko.domain.authentication.viewmodel.AuthenticationViewModel
+import com.kzdev.sptransaiko.domain.stopbuss.models.DataStopBussResponse
 import com.kzdev.sptransaiko.domain.stopbuss.viewmodels.StopBussListViewModel
+import com.kzdev.sptransaiko.domain.stopbussdeatils.ui.StopBussDetailsActivity
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
@@ -28,7 +31,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val token = "b4cbfc4b77f36931b7e2ee1bcaf5d165927ec6ef5ff9e667fc7a926426125d82"
 
-    private val termosBusca = "Afo"
+    private val termosBusca = "afonso"
 
     private val viewModelStopBuss: StopBussListViewModel by viewModels { StopBussListViewModel.Factory }
 
@@ -51,6 +54,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         observerViews()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModelAuthentication.postAuthentication(token)
+        observerViews()
+    }
+
     private fun observerViews() {
 
         viewModelAuthentication.authentication.observe(this) {
@@ -69,7 +78,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
             } else {
                 stopBussListData = stopBussList.map { LatLng(it.py, it.px) }
-                stopBussListData?.let { updateMapWithStops(it) }
+                stopBussListData?.let { updateMapWithStops(it, stopBussList) }
                 Log.d("lista stop buss", "StopBussList: ${stopBussList}")
 
             }
@@ -80,25 +89,49 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun updateMapWithStops(stops: List<LatLng>) {
+    private fun updateMapWithStops(stops: List<LatLng>, data: List<DataStopBussResponse>) {
         Log.d("resposta lista", "Updating map with stops: $stops")
 
         if (::mMap.isInitialized) {
             mMap.clear()
 
             val originalBitmap = BitmapFactory.decodeResource(resources, R.drawable.icon_stop_buss)
-            val scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, 100, 100, false)
+            val scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, 80, 80, false)
             val customIcon = BitmapDescriptorFactory.fromBitmap(scaledBitmap)
 
-            for (stop in stops) {
-                mMap.addMarker(MarkerOptions().position(stop).title("Parada").icon(customIcon))
-            }
+            if (stops.size == data.size) {
+                for (i in stops.indices) {
+                    val stop = stops[i]
+                    val stopBuss = data[i]
 
-            if (stops.isNotEmpty()) {
-                val boundsBuilder = LatLngBounds.Builder()
-                stops.forEach { boundsBuilder.include(it) }
-                val bounds = boundsBuilder.build()
-                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
+                    val marker = mMap.addMarker(
+                        MarkerOptions()
+                            .position(stop)
+                            .title("Parada: ${stopBuss.ed}")
+                            .icon(customIcon)
+                    )
+                    marker?.tag = stopBuss.ed
+
+                    if (stops.isNotEmpty()) {
+                        val boundsBuilder = LatLngBounds.Builder()
+                        stops.forEach { boundsBuilder.include(it) }
+                        val bounds = boundsBuilder.build()
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
+                    }
+
+                    mMap.setOnMarkerClickListener { marker ->
+                        val nameMark = marker.tag as? String
+                        val intent = Intent(this, StopBussDetailsActivity::class.java).apply {
+                            if (nameMark != null) {
+                                putExtra("name", nameMark)
+                            }
+                            putExtra("cp", stopBuss.cp)
+                            putExtra("token", token)
+                        }
+                        startActivity(intent)
+                        true
+                    }
+                }
             }
         }
     }
@@ -112,6 +145,5 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(saoPauloLatLng, zoomLevel))
 
-        stopBussListData?.let { updateMapWithStops(it) }
     }
 }
