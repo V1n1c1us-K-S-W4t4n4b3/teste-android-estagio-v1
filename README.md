@@ -34,6 +34,6 @@ obs: como a API não retorna muitas informaçoes em um unico get improvisei most
 
 
 - como consdequência do tempo e da API retornar pouca informação prefiro manter obotao de "mais informaçôes" direcionando o usuario para o site do SPTrans como um adcional.
-- Acredito ter atendido todos os requisitos dos projetos e alguns extras favor me enviar o feedback, obrigado!
+- Acredito ter atendido todos os requisitos dos projetos e alguns extras, sei que algumas boas praticas deixei passar como o uso do strings file mas foi por conta do tempo ,favor me enviar um feedback, obrigado!
 
 
