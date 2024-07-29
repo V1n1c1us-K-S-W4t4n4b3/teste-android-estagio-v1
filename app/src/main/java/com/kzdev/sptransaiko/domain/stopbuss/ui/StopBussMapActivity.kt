@@ -5,9 +5,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -19,9 +22,12 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.kzdev.sptransaiko.R
 import com.kzdev.sptransaiko.databinding.ActivityMainBinding
 import com.kzdev.sptransaiko.domain.authentication.viewmodel.AuthenticationViewModel
+import com.kzdev.sptransaiko.domain.stopbuss.adapter.StopBussSearchAdapter
 import com.kzdev.sptransaiko.domain.stopbuss.models.DataStopBussResponse
 import com.kzdev.sptransaiko.domain.stopbuss.viewmodels.StopBussListViewModel
 import com.kzdev.sptransaiko.domain.stopbussdeatils.ui.StopBussDetailsActivity
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -31,13 +37,15 @@ class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var token = "b4cbfc4b77f36931b7e2ee1bcaf5d165927ec6ef5ff9e667fc7a926426125d82"
 
-    private var termosBusca = "afonso"
+    private var termosBusca = ""
 
     private val viewModelStopBuss: StopBussListViewModel by viewModels { StopBussListViewModel.Factory }
 
     private val viewModelAuthentication: AuthenticationViewModel by viewModels { AuthenticationViewModel.Factory }
 
     private var stopBussListData: List<LatLng>? = null
+
+    private lateinit var adapter: StopBussSearchAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,21 +74,44 @@ class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         viewModelStopBuss.stopBussList.observe(this) { stopBussList ->
             Log.d("resposta ok", "StopBussList: ${stopBussList}")
-
-            if (stopBussList.isEmpty()) {
-                Toast.makeText(this, "Não encontramos nenhuma parada de ônibus", Toast.LENGTH_SHORT)
-                    .show()
-
-            } else {
-                stopBussListData = stopBussList.map { LatLng(it.py, it.px) }
-                stopBussListData?.let { updateMapWithStops(it, stopBussList) }
-                Log.d("lista stop buss", "StopBussList: ${stopBussList}")
-
-            }
+            setupSearchRecyclerView(stopBussList)
         }
 
         viewModelStopBuss.errorException.observe(this) {
             Log.d("resposta get", "StopBussList: $it")
+        }
+    }
+
+    private fun setupSearchRecyclerView(data: List<DataStopBussResponse>) {
+        binding.rvSearch.layoutManager = LinearLayoutManager(this)
+
+        val search = data.map { DataStopBussResponse(it.cp, it.ed, it.np, it.py, it.px) }
+
+        adapter = StopBussSearchAdapter(search) { stopBuss ->
+            closeSearchView()
+            stopBussListData = listOf(LatLng(stopBuss.py, stopBuss.px))
+            stopBussListData?.let { updateMapWithStops(it, listOf(stopBuss)) }
+        }
+
+        binding.rvSearch.adapter = adapter
+
+        binding.searchView.editText.addTextChangedListener {
+            searchSupplierByText(it.toString())
+        }
+    }
+
+    private fun closeSearchView() {
+        binding.searchView.clearFocusAndHideKeyboard()
+        binding.searchView.hide()
+    }
+
+    private fun searchSupplierByText(text: String) {
+
+        lifecycleScope.launch {
+            binding.layoutProgressSearch.visibility = View.VISIBLE
+            delay(500L)
+            adapter.filter.filter(text)
+            binding.layoutProgressSearch.visibility = View.GONE
         }
     }
 
@@ -132,6 +163,7 @@ class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
                         startActivity(intent)
                         true
                     }
+                    viewModelStopBuss.getStopBuss(token, termosBusca)
                 }
             }
         }
