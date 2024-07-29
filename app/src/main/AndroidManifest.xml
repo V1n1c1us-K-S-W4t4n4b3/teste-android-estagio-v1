@@ -17,7 +17,7 @@
         android:theme="@style/Theme.SPTransAIKO"
         tools:targetApi="31">
         <activity
-            android:name=".domain.monitoringlines.MonitoringLinesActivity"
+            android:name=".domain.monitoringlines.ui.MonitoringLinesActivity"
             android:exported="false" />
         <activity
             android:name=".domain.stopbussdeatils.ui.StopBussDetailsActivity"

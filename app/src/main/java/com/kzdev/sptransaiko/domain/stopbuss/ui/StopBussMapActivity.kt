@@ -29,9 +29,9 @@ class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
-    private val token = "b4cbfc4b77f36931b7e2ee1bcaf5d165927ec6ef5ff9e667fc7a926426125d82"
+    private var token = ""
 
-    private val termosBusca = "afonso"
+    private var termosBusca = ""
 
     private val viewModelStopBuss: StopBussListViewModel by viewModels { StopBussListViewModel.Factory }
 
@@ -45,18 +45,15 @@ class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val map = supportFragmentManager.findFragmentById(R.id.myMap) as SupportMapFragment
         map.getMapAsync(this)
+
+        token = "b4cbfc4b77f36931b7e2ee1bcaf5d165927ec6ef5ff9e667fc7a926426125d82"
+        termosBusca = "afonso"
+        viewModelAuthentication.postAuthentication(token)
     }
 
     override fun onStart() {
         super.onStart()
 
-        viewModelAuthentication.postAuthentication(token)
-        observerViews()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModelAuthentication.postAuthentication(token)
         observerViews()
     }
 
@@ -119,8 +116,8 @@ class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
                         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
                     }
 
-                    mMap.setOnMarkerClickListener { marker ->
-                        val nameMark = marker.tag as? String
+                    mMap.setOnMarkerClickListener {
+                        val nameMark = it.tag as? String
                         val intent = Intent(this, StopBussDetailsActivity::class.java).apply {
                             if (nameMark != null) {
                                 putExtra("name", nameMark)

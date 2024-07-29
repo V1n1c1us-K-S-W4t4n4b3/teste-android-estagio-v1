@@ -6,7 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kzdev.sptransaiko.databinding.ActivityStopBussDetailsBinding
-import com.kzdev.sptransaiko.domain.monitoringlines.MonitoringLinesActivity
+import com.kzdev.sptransaiko.domain.monitoringlines.ui.MonitoringLinesActivity
 import com.kzdev.sptransaiko.domain.stopbussdeatils.adapter.ExpectedStopBussLinesAdapter
 import com.kzdev.sptransaiko.domain.stopbussdeatils.model.DataExpectedTimeStopBussResponse
 import com.kzdev.sptransaiko.domain.stopbussdeatils.viewmodel.ExpectedStopBussLinesViewModel
@@ -58,6 +58,7 @@ class StopBussDetailsActivity : AppCompatActivity() {
     private fun open(cl: Int) {
         val intent = Intent(this, MonitoringLinesActivity::class.java)
         intent.putExtra("cl", cl)
+        intent.putExtra("token", token)
         startActivity(intent)
     }
 
@@ -66,7 +67,7 @@ class StopBussDetailsActivity : AppCompatActivity() {
 
         name = intent.getStringExtra("name") ?: ""
 
-        token = intent.getStringExtra("name") ?: ""
+        token = intent.getStringExtra("token") ?: ""
 
         cp = intent.getIntExtra("cp", 0)
 

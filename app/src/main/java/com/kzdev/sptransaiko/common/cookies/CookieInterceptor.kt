@@ -1,4 +1,4 @@
-package com.kzdev.sptransaiko.common.network
+package com.kzdev.sptransaiko.common.cookies
 
 import okhttp3.CookieJar
 import okhttp3.Interceptor

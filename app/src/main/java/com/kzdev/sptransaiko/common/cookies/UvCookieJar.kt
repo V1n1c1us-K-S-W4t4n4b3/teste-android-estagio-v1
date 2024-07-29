@@ -1,4 +1,4 @@
-package com.kzdev.sptransaiko.common.network
+package com.kzdev.sptransaiko.common.cookies
 
 import android.util.Log
 import okhttp3.Cookie

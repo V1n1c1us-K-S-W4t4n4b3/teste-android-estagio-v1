@@ -1,6 +1,8 @@
 package com.kzdev.sptransaiko.common.network
 
 import com.google.gson.GsonBuilder
+import com.kzdev.sptransaiko.common.cookies.CookieInterceptor
+import com.kzdev.sptransaiko.common.cookies.UvCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
