@@ -22,7 +22,7 @@ class ExpectedStopBussLinesAdapter(
 
 
         if (info != null) {
-            holder.binding.tvLine.text = "${holder.binding.tvLine.text} ${info.sl}"
+            holder.binding.tvLine.text = "${holder.binding.tvLine.text} ${info.cl}"
         }
 
         if (info != null) {
