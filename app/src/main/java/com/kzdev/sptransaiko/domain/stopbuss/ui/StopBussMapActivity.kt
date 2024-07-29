@@ -29,9 +29,9 @@ class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
-    private var token = ""
+    private var token = "b4cbfc4b77f36931b7e2ee1bcaf5d165927ec6ef5ff9e667fc7a926426125d82"
 
-    private var termosBusca = ""
+    private var termosBusca = "afonso"
 
     private val viewModelStopBuss: StopBussListViewModel by viewModels { StopBussListViewModel.Factory }
 
@@ -46,8 +46,6 @@ class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
         val map = supportFragmentManager.findFragmentById(R.id.myMap) as SupportMapFragment
         map.getMapAsync(this)
 
-        token = "b4cbfc4b77f36931b7e2ee1bcaf5d165927ec6ef5ff9e667fc7a926426125d82"
-        termosBusca = "afonso"
         viewModelAuthentication.postAuthentication(token)
     }
 
@@ -113,7 +111,13 @@ class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
                         val boundsBuilder = LatLngBounds.Builder()
                         stops.forEach { boundsBuilder.include(it) }
                         val bounds = boundsBuilder.build()
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
+                        val zoomLevel = 14
+                        mMap.moveCamera(
+                            CameraUpdateFactory.newLatLngBounds(
+                                bounds,
+                                zoomLevel
+                            )
+                        )
                     }
 
                     mMap.setOnMarkerClickListener {
@@ -138,8 +142,7 @@ class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         val saoPauloLatLng = LatLng(-23.5505, -46.6333)
-        val zoomLevel = 12f
-
+        val zoomLevel = 14f
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(saoPauloLatLng, zoomLevel))
 
     }

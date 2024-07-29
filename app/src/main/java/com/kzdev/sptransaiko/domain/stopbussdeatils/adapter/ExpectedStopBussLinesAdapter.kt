@@ -18,22 +18,26 @@ class ExpectedStopBussLinesAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewModel, position: Int) {
-        val info = dataset.p.l[position]
+        val info = dataset.p?.l?.get(position)
 
 
-        holder.binding.tvLine.text = "${holder.binding.tvLine.text} ${info.sl}"
+        if (info != null) {
+            holder.binding.tvLine.text = "${holder.binding.tvLine.text} ${info.sl}"
+        }
 
-        holder.binding.tvDestiny.text = "${holder.binding.tvDestiny.text} ${info.lt1}"
+        if (info != null) {
+            holder.binding.tvDestiny.text = "${holder.binding.tvDestiny.text} ${info.lt1}"
+        }
 
-        val vsText = info.vs.joinToString(separator = ", ") { it.t }
+        val vsText = info?.vs?.joinToString(separator = ", ") { it.t }
         holder.binding.tvExpectedTime.text = "${holder.binding.tvExpectedTime.text} ${vsText}"
 
         holder.itemView.setOnClickListener {
-            onItemClicked(dataset.p.l[position].cl)
+            dataset.p?.l?.get(position)?.let { it1 -> onItemClicked(it1.cl) }
         }
     }
 
-    override fun getItemCount() = dataset.p.l.size
+    override fun getItemCount(): Int = dataset.p.let { it?.l?.size!! }
 
     class ViewModel(val binding: ItemListStopBussLinesBinding) :
         RecyclerView.ViewHolder(binding.root)

@@ -44,7 +44,9 @@ class StopBussDetailsActivity : AppCompatActivity() {
 
     private fun observerViews() {
         viewModelExpectedStopBussLines.list.observe(this) {
-            setupRecyclerView(it)
+            if (it.p != null) {
+                setupRecyclerView(it)
+            }
         }
     }
 
