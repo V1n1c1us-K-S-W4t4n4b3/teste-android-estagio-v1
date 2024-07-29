@@ -2,6 +2,7 @@ package com.kzdev.sptransaiko.domain.stopbussdeatils.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -46,6 +47,9 @@ class StopBussDetailsActivity : AppCompatActivity() {
         viewModelExpectedStopBussLines.list.observe(this) {
             if (it.p != null) {
                 setupRecyclerView(it)
+                binding.tvWithoutPrediction.visibility = View.GONE
+            } else {
+                binding.tvWithoutPrediction.visibility = View.VISIBLE
             }
         }
     }

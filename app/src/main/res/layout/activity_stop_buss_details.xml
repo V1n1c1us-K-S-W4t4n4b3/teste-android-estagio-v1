@@ -47,7 +47,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Linhas que passam neste ponto:" />
+        android:text="Previsao de chegada:" />
+
+    <TextView
+        android:id="@+id/tv_without_prediction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:text="Sem previsões de chegada de onibus para este ponto." />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"
