@@ -9,10 +9,10 @@ internal class UvCookieJar : CookieJar {
 
     private val cookies = mutableListOf<Cookie>()
 
-    override fun saveFromResponse(url: HttpUrl, cookieList: List<Cookie>) {
-        cookies.clear()
-        cookies.addAll(cookieList)
-        Log.d("CookieJar", "Loading cookies for $url: $cookies")
+    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+        this.cookies.clear()
+        this.cookies.addAll(cookies)
+        Log.d("CookieJar", "Loading cookies for $url: ${this.cookies}")
 
     }
 

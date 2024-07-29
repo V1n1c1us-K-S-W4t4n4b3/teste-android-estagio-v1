@@ -20,9 +20,12 @@ class ExpectedStopBussLinesAdapter(
     override fun onBindViewHolder(holder: ViewModel, position: Int) {
         val info = dataset.p?.l?.get(position)
 
-
         if (info != null) {
             holder.binding.tvLine.text = "${holder.binding.tvLine.text} ${info.cl}"
+        }
+
+        if (info != null) {
+            holder.binding.tvStarting.text = "${holder.binding.tvStarting.text} ${info.lt0}"
         }
 
         if (info != null) {

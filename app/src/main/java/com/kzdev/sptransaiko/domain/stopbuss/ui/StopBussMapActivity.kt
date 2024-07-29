@@ -85,18 +85,26 @@ class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setupSearchRecyclerView(data: List<DataStopBussResponse>) {
         binding.rvSearch.layoutManager = LinearLayoutManager(this)
 
-        val search = data.map { DataStopBussResponse(it.cp, it.ed, it.np, it.py, it.px) }
+        // Armazena a lista original de dados para referência futura
+        val allData = data.map { DataStopBussResponse(it.cp, it.ed, it.np, it.py, it.px) }
 
-        adapter = StopBussSearchAdapter(search) { stopBuss ->
+        // Inicializa o adaptador com todos os dados
+        adapter = StopBussSearchAdapter(allData) { selectedItem ->
             closeSearchView()
-            stopBussListData = listOf(LatLng(stopBuss.py, stopBuss.px))
-            stopBussListData?.let { updateMapWithStops(it, listOf(stopBuss)) }
+
+            // Filtra todos os pontos relacionados ao item selecionado
+            val relatedStops = allData.filter { it.ed == selectedItem.ed }
+            stopBussListData = relatedStops.map { LatLng(it.py, it.px) }
+
+            // Atualiza o mapa com todos os pontos relacionados
+            stopBussListData?.let { updateMapWithStops(it, relatedStops) }
         }
 
         binding.rvSearch.adapter = adapter
 
+        // Adiciona o TextWatcher para filtrar os dados conforme o texto da pesquisa
         binding.searchView.editText.addTextChangedListener {
-            searchSupplierByText(it.toString())
+            searchSupplierByText(it.toString(), allData)
         }
     }
 
@@ -105,7 +113,7 @@ class StopBussMapActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.searchView.hide()
     }
 
-    private fun searchSupplierByText(text: String) {
+    private fun searchSupplierByText(text: String, allData: List<DataStopBussResponse>) {
 
         lifecycleScope.launch {
             binding.layoutProgressSearch.visibility = View.VISIBLE

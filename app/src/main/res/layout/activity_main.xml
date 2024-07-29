@@ -16,14 +16,14 @@
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Buscar Endereço" />
+            android:hint="Buscar parada de ônibus" />
 
         <com.google.android.material.search.SearchView
             android:id="@+id/search_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/transparent"
-            android:hint="Buscar Endereço"
+            android:hint="Buscar parada de ônibus"
             app:layout_anchor="@id/search_bar">
 
             <androidx.appcompat.widget.LinearLayoutCompat

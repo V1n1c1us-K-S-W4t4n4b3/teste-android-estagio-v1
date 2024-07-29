@@ -18,7 +18,16 @@
             style="@style/TextAppearance.Material3.LabelLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Linha: "
+            android:text="Codigo da linha: "
+            android:textColor="@color/common_google_signin_btn_text_light" />
+
+        <TextView
+            android:id="@+id/tv_starting"
+            style="@style/TextAppearance.Material3.TitleMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Partida: "
             android:textColor="@color/common_google_signin_btn_text_light" />
 
         <TextView

@@ -1,7 +1,9 @@
 package com.kzdev.sptransaiko.domain.monitoringlines.ui
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -46,7 +48,7 @@ class MonitoringLinesActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val handler = android.os.Handler(Looper.getMainLooper())
 
-    private val updateInterval: Long = 10000
+    private val updateInterval: Long = 15000
 
     private val updateRunnable = object : Runnable {
         override fun run() {
@@ -63,6 +65,10 @@ class MonitoringLinesActivity : AppCompatActivity(), OnMapReadyCallback {
         map.getMapAsync(this)
 
         receiveData()
+
+        binding.toolbar.setNavigationOnClickListener { finish() }
+        binding.cdInfo.setOnClickListener { openWebPage("https://www.sptrans.com.br/") }
+        binding.tvLine.text = "${binding.tvLine.text} $cl"
     }
 
     override fun onStart() {
@@ -76,6 +82,12 @@ class MonitoringLinesActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onStop()
 
         handler.removeCallbacks(updateRunnable)
+    }
+
+    private fun openWebPage(url: String) {
+        val webpage: Uri = Uri.parse(url)
+        val intent = Intent(Intent.ACTION_VIEW, webpage)
+        startActivity(intent)
     }
 
     private fun observerViews() {
